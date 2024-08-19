@@ -15,15 +15,18 @@ def download_youtube_video(url, output_path):
     
     return video_path, audio_path
 
+import subprocess
+import os
+
 def merge_video_audio(video_path, audio_path, output_path):
     # 构建输出文件的完整路径
     output_file = os.path.join(output_path, 'final_output.mp4')
     command = [
-        'ffmpeg',
+        r'C:\ffmpeg\bin\ffmpeg.exe',  # 使用 FFmpeg 的绝对路径
         '-i', video_path,
         '-i', audio_path,
-        '-c:v', 'copy',  # 复制视频流，不重新编码
-        '-c:a', 'aac',  # 将音频编码为 AAC
+        '-c:v', 'copy',
+        '-c:a', 'aac',
         '-strict', 'experimental',
         output_file
     ]
@@ -33,6 +36,10 @@ def merge_video_audio(video_path, audio_path, output_path):
         print(f"合并完成，输出文件保存在：{output_file}")
     except subprocess.CalledProcessError:
         print("合并失败，请检查输入文件和参数")
+    except FileNotFoundError:
+        print("未找到 ffmpeg 可执行文件，请确保已安装并将其添加到系统 PATH 中")
+
+
 
 def main():
     url = input("请输入 YouTube 视频的 URL: ")
